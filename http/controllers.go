@@ -11,7 +11,7 @@ import (
 // it will also attempt to represent other information (like uptime and history) in an ordered manner
 func (h Handler) ListContainers(w http.ResponseWriter, r *http.Request) (status int, body []byte, err error) {
 
-	cs, err := docker.ListRunningContainers(h.Config)
+	cs, err := docker.ListRunningContainers(h.Config.Socket)
 
 	if err != nil {
 		return http.StatusInternalServerError, []byte(""), err
