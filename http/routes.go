@@ -14,7 +14,7 @@ type Handler struct {
 func (h Handler) CreateRoutes() router.Routes {
 	return router.Routes{
 
-		// List contaienrs exposes the containers currenty running on the stack
+		// List containers exposes the containers currenty running on the stack
 		router.Route{
 			Name:        "ListContainers",
 			Method:      "GET",
@@ -28,6 +28,14 @@ func (h Handler) CreateRoutes() router.Routes {
 			Method:      "POST",
 			Pattern:     "/config",
 			HandlerFunc: h.SetConfig,
+		},
+
+		// GetHealth Exposes basic health state of the containers and silo-agent
+		router.Route{
+			Name:        "GetHealth",
+			Method:      "GET",
+			Pattern:     "/health",
+			HandlerFunc: h.GetHealth,
 		},
 	}
 }
