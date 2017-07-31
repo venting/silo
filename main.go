@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/Sirupsen/logrus"
 	"github.com/fatih/structs"
-	"github.com/infinityworksltd/go-common/logger"
-	"github.com/infinityworksltd/go-common/router"
+	"github.com/infinityworks/go-common/logger"
+	"github.com/infinityworks/go-common/router"
+	"github.com/sirupsen/logrus"
 	"github.com/venting/silo/config"
 	siloHttp "github.com/venting/silo/http"
 )

@@ -1,7 +1,7 @@
 package http
 
 import (
-	"github.com/infinityworksltd/go-common/router"
+	"github.com/infinityworks/go-common/router"
 	"github.com/venting/silo/config"
 )
 
