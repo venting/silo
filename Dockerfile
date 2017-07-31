@@ -23,6 +23,4 @@ EXPOSE 8080
 
 COPY --from=builder /bin/silo-agent /bin/silo-agent
 
-USER exporter
-
 CMD [ "/bin/silo-agent" ]
