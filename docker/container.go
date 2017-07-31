@@ -6,8 +6,8 @@ import (
 	gdc "github.com/fsouza/go-dockerclient"
 )
 
-// ListRunningContainers returns the effective output of a `docker ps` for running containers only.
-func ListRunningContainers(socket string) ([]gdc.APIContainers, error) {
+// ListContainers returns the effective output of a `docker ps -a`
+func ListContainers(socket string) ([]gdc.APIContainers, error) {
 
 	client, err := gdc.NewClient(socket)
 	if err != nil {
@@ -15,7 +15,7 @@ func ListRunningContainers(socket string) ([]gdc.APIContainers, error) {
 
 	}
 
-	cs, err := client.ListContainers(gdc.ListContainersOptions{All: false})
+	cs, err := client.ListContainers(gdc.ListContainersOptions{All: true})
 	if err != nil {
 		return cs, fmt.Errorf("Error listing containers: %v", err)
 	}
