@@ -1,25 +1,28 @@
 package docker
 
 import (
+	"context"
 	"fmt"
 
-	gdc "github.com/fsouza/go-dockerclient"
+	"github.com/docker/docker/api/types"
+	"github.com/docker/docker/client"
 )
 
 // ListContainers returns the effective output of a `docker ps -a`
-func ListContainers(socket string) ([]gdc.APIContainers, error) {
-
-	client, err := gdc.NewClient(socket)
+func ListContainers() ([]types.Container, error) {
+	cli, err := client.NewEnvClient()
 	if err != nil {
 		return nil, fmt.Errorf("Error creating Docker client: %v", err)
-
 	}
 
-	cs, err := client.ListContainers(gdc.ListContainersOptions{All: true})
+	containers, err := cli.ContainerList(context.Background(), types.ContainerListOptions{})
 	if err != nil {
-		return cs, fmt.Errorf("Error listing containers: %v", err)
+		return containers, fmt.Errorf("Error listing containers: %v", err)
 	}
 
-	return cs, nil
+	for _, container := range containers {
+		fmt.Printf("%s %s\n", container.ID[:10], container.Image)
+	}
 
+	return containers, nil
 }
