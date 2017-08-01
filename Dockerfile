@@ -6,7 +6,7 @@ RUN apk --update add ca-certificates \
 COPY ./ /go/src/github.com/venting/silo
 WORKDIR /go/src/github.com/venting/silo
 
-RUN go get ./... \
+RUN go get -u -v ./... \
     && go test ./... \
     && go build -o /bin/silo-agent
 
