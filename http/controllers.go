@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/infinityworksltd/go-common/router"
+	"github.com/infinityworks/go-common/router"
 	"github.com/venting/silo/docker"
 )
 

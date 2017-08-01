@@ -1,7 +1,7 @@
 package config
 
 import (
-	cfg "github.com/infinityworksltd/go-common/config"
+	cfg "github.com/infinityworks/go-common/config"
 )
 
 // Config - Defines application configuration
