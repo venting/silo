@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/gorilla/mux"
 	"github.com/infinityworks/go-common/router"
 	"github.com/venting/silo/docker"
 )
@@ -19,6 +20,22 @@ func (h Handler) ListContainers(w http.ResponseWriter, r *http.Request) (status 
 	}
 
 	return router.MarshalBody(cs)
+}
+
+// RestartContainer will query the local docker socket, and return a list of containers that are currently running
+// it will also attempt to represent other information (like uptime and history) in an ordered manner
+func (h Handler) RestartContainer(w http.ResponseWriter, r *http.Request) (status int, body []byte, err error) {
+
+	vars := mux.Vars(r)
+	id := vars["id"]
+
+	err = docker.RestartContainer(id, h.Config.DockerTimeout)
+
+	if err != nil {
+		return http.StatusInternalServerError, []byte(""), err
+	}
+
+	return http.StatusOK, []byte(""), nil
 }
 
 // SetConfig method will accept an incoming configuration change, it will take the body of the request, and use that

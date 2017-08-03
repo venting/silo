@@ -22,6 +22,14 @@ func (h Handler) CreateRoutes() router.Routes {
 			HandlerFunc: h.ListContainers,
 		},
 
+		// Restarts the container with the specified ID
+		router.Route{
+			Name:        "RestartContainer",
+			Method:      "POST",
+			Pattern:     "/container/restart/{id}",
+			HandlerFunc: h.RestartContainer,
+		},
+
 		// SetConfig route exposes the basic interface that allows configuration to be updated
 		router.Route{
 			Name:        "SetConfig",
