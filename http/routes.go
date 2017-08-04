@@ -26,7 +26,7 @@ func (h Handler) CreateRoutes() router.Routes {
 		router.Route{
 			Name:        "RestartContainer",
 			Method:      "POST",
-			Pattern:     "/container/restart/{id}",
+			Pattern:     "/container/{id}/restart",
 			HandlerFunc: h.RestartContainer,
 		},
 

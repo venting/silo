@@ -7,6 +7,7 @@ import (
 
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/client"
+	"github.com/pkg/errors"
 )
 
 // ListContainers returns a list of containers on the local system
@@ -40,7 +41,7 @@ func RestartContainer(id string, timeout *time.Duration) error {
 	err = cli.ContainerRestart(context.Background(), id, timeout)
 
 	if err != nil {
-		return fmt.Errorf("Error restarting container %s, error: %v", id, err)
+		return errors.Wrapf(err, "Error restarting container %s", id)
 	}
 
 	return nil
