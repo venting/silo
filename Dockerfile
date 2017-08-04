@@ -21,6 +21,8 @@ USER venting
 
 EXPOSE 8080
 
+ENV DOCKER_TIMEOUT=10
+
 COPY --from=builder /bin/silo-agent /bin/silo-agent
 
 CMD [ "/bin/silo-agent" ]
