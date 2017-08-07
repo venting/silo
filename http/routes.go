@@ -14,7 +14,7 @@ type Handler struct {
 func (h Handler) CreateRoutes() router.Routes {
 	return router.Routes{
 
-		// List containers exposes the containers currenty running on the stack
+		// List containers exposes the containers currently running on the stack
 		router.Route{
 			Name:        "ListContainers",
 			Method:      "GET",

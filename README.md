@@ -1,40 +1,23 @@
-# Summary
-
-Silo represents a different take on container orchestration. At least, that's the intention, it's early days.
-Below sets out the intended vision and the current plans to date. Silo and any associated repositories are open source, community driven development is our goal.
-
-# What problem are we trying to solve?
-
-Container's are totally awesome for many reasons, one of the keys to their success, is their simplicity and ease-of-use.
-When building and developing on containers, at some stage you encounter container orchestration platforms such as Kubernetes and Rancher.
-
-These systems are really, really powerful and are very appropriate to a lot of deployments. They represent a giant leap in the quality and feature sets over what came before.
-
-Sometimes though, you just want a host to come online and run a pre-prescribed set of containers, perhaps as part of an auto-scaling group or similar.
-
-When using services available in the cloud such as load balancers, this simple way of scaling compute in a predictable fashion, makes a lot of sense. You might be looking to keep things simple or maybe your looking to ensure consistent performance for peak periods.
-
-Container orchestrators cater for this type of deployment, primarily though, such tools are built around the concept of handling the placement of containers themselve, provision of value-add components that wrap around your services.
-In reality you can find yourself in such situations using a hugely powerful orchestration and scheduling tool to execute what should be a simple task.  The ability for these platforms to handle encrypted networks, provide auto-discovery is excellent, but at times it can feel awkward when going against the grain of their typical use-cases.
-
-*Surely there is a simpler way?*
-
-You might then think that configuration management tools, Chef or Ansible might be a good option. 
-Whilst very capable of handling such types of deployment, they don't always fit the jigsaw quite so well with other container tools, nor do they give you good visibility of your services.
-
 # Silo
+[![](https://images.microbadger.com/badges/version/venting/silo-agent.svg)](http://microbadger.com/images/venting/silo-agent "Get your own version badge on microbadger.com") [![](https://images.microbadger.com/badges/image/venting/silo-agent.svg)](http://microbadger.com/images/venting/silo-agent "Get your own image badge on microbadger.com")
+[![Go Report Card](https://goreportcard.com/badge/github.com/venting/silo)](https://goreportcard.com/report/github.com/venting/silo)
+[![GoDoc](https://godoc.org/github.com/venting/silo?status.svg)](https://godoc.org/github.com/venting/silo)
 
-So what's Silo and how does it fit in? Whilst not by any means a new concept, providing a simple and easy to use way to upon the boot, obtain a container run-list and start the containers. Instead of 'orchestrating', we focus on the most simple scheduling we can. This will be done by simply running a silo-agent container, servers can obtain their run-list and start the services on creation or boot. 
+<img src="http://siloproject.io/images/logo.png" width="400">
 
-That 'run-list' would be something remotely available to the server (S3, git, http, volume mount). At it's simplest form, this agent/run-list represent the 'runtime' part of the stack.
+Silo represents a different take on container orchestration, one with simplicity as the focus and intenteded to fit neatly into existing tooling. Silo and any associated repositories are open source, community driven development is our goal. Read more on the [official silo documentation](https://siloproject.io).
 
-This gives people an easy way to stand-up containers on hosts. Sounds great... surely bash scripts or docker-compose could be used in such a fashion to achieve the same goals? This is where the server part of the equation brings benefit. The intention is to have a central server, fully independent from the runtime.
+So what's Silo and how does it fit in? Silo is a distributed container scheduling tool built for the cloud. Relying on well tested concepts, silo provides a simpler layer of functionality to enable it's users to schedule and deploy containers without the complexity and maintenance overheads of full-fat orchestration platforms.
 
-This optional server component would then be able to handle:
+The core component in-play here is the silo-agent. A simple and lightweight container that can be started on boot using 'user data' or similar scripts that execute on the start of a virtual machine. Once started, the agent obtains a run-list and starts the containers. That 'run-list' can be something available to the server over a number of mediums (S3, git, http, volume mount etc).
 
-* Agent/Container State monitoring
-* Metrics
-* Ability to mark servers as down/degraded
-* Integration with release/upgrade tooling
+This gives you an easy way to stand-up container stacks. Sounds great... surely bash scripts or docker-compose could be used in such a fashion to achieve the same goals? 
+You absoloutley could of course, but above and beyond scheduling the containers, silo gives you:
 
-The features will likely be subject to a high rate of change in the initial stages. Fundamentally though, we want to create something that's small and simple. With the aim of reducing the overhead and complexity of running services this way.
+* Agent/Container monitoring via a prometheus compatible `/metrics` endpoint
+* Overall node health - a customisable health for all services on this stack. This can be used to drive loadbalancer health checks
+* Ability to easily control these remote hosts using the Silo CLI, useful for tasks such as upgrading stacks or restarting containers
+* Integration with release/upgrade tooling, interactaction with common loadbalancers such as the Amazon ALB and mark the server as down when performing upgrades or maintenance. 
+
+For now, support for Silo is still experimental. The features will likely be subject to a high rate of change in the initial stages. 
+Fundamentally though, we want to create something that's small and simple. With the aim of reducing the overhead and complexity of running services this way.
