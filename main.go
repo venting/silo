@@ -10,6 +10,7 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/venting/silo/config"
 	siloHttp "github.com/venting/silo/http"
+	"github.com/venting/silo/metrics"
 )
 
 var (
@@ -29,6 +30,7 @@ func main() {
 
 // setupHTTP will spin up a golang http server to handle the basic REST interface of the silo agent
 func setupHTTP() error {
+
 	log.WithFields(structs.Map(applicationCfg)).Info("Starting Silo Agent")
 
 	binding := fmt.Sprintf(":%s", applicationCfg.ListenPort())
@@ -36,6 +38,8 @@ func setupHTTP() error {
 	h := siloHttp.Handler{
 		Config: applicationCfg,
 	}
+
+	metrics.Init()
 
 	r := router.NewRouter(log, h.CreateRoutes())
 
