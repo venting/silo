@@ -2,12 +2,16 @@ package http
 
 import (
 	"github.com/infinityworks/go-common/router"
+	"github.com/sirupsen/logrus"
+	"github.com/venting/silo/agent"
 	"github.com/venting/silo/config"
 )
 
 // Handler struct defines structure that all routes will hang off
 type Handler struct {
 	Config config.Config
+	Queue  chan agent.Work
+	Logger *logrus.Logger
 }
 
 // CreateRoutes will return a set of mux router compatible routes to serve the app with
@@ -44,6 +48,14 @@ func (h Handler) CreateRoutes() router.Routes {
 			Method:      "GET",
 			Pattern:     "/health",
 			HandlerFunc: h.GetHealth,
+		},
+
+		// GetHealth Exposes basic health state of the containers and silo-agent
+		router.Route{
+			Name:        "KillAgent",
+			Method:      "DELETE",
+			Pattern:     "/",
+			HandlerFunc: h.KillAgent,
 		},
 	}
 }
