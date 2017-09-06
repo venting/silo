@@ -3,11 +3,13 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 
 	"github.com/fatih/structs"
 	"github.com/infinityworks/go-common/logger"
 	"github.com/infinityworks/go-common/router"
 	"github.com/sirupsen/logrus"
+	"github.com/venting/silo/agent"
 	"github.com/venting/silo/config"
 	siloHttp "github.com/venting/silo/http"
 	"github.com/venting/silo/metrics"
@@ -16,6 +18,7 @@ import (
 var (
 	log            *logrus.Logger
 	applicationCfg config.Config
+	workQueue      chan agent.Work
 )
 
 func init() {
@@ -25,6 +28,17 @@ func init() {
 }
 
 func main() {
+	var configFilePath string
+
+	if len(os.Args) == 2 {
+		log.Infof("Starting application with given configuration file in path: %s\n", os.Args[1])
+		configFilePath = os.Args[1]
+	} else {
+		log.Infof("Starting application without any configuration. Listening for config..")
+	}
+
+	workQueue = agent.StartAgent(configFilePath, log)
+
 	setupHTTP()
 }
 
@@ -37,11 +51,19 @@ func setupHTTP() error {
 
 	h := siloHttp.Handler{
 		Config: applicationCfg,
+		Queue:  workQueue,
+		Logger: log,
 	}
 
 	metrics.Init()
 
 	r := router.NewRouter(log, h.CreateRoutes())
+
+	defer func() {
+		if r := recover(); r != nil {
+			log.Fatalf("This request panicked. Gracefully killing the server: %s", r)
+		}
+	}()
 
 	return http.ListenAndServe(binding, r)
 }

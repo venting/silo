@@ -1,11 +1,15 @@
 package http
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
 	"github.com/gorilla/mux"
 	"github.com/infinityworks/go-common/router"
+
+	"github.com/pkg/errors"
+	"github.com/venting/silo/agent"
 	"github.com/venting/silo/docker"
 )
 
@@ -42,7 +46,41 @@ func (h Handler) RestartContainer(w http.ResponseWriter, r *http.Request) (statu
 // as a new source for container configuration
 func (h Handler) SetConfig(w http.ResponseWriter, r *http.Request) (status int, body []byte, err error) {
 
-	return http.StatusNoContent, []byte(""), nil
+	// Get the configType and config form input variables
+	r.ParseForm()
+
+	configType, typeExists := r.Form["configType"]
+	configData, configExists := r.Form["config"]
+
+	if !typeExists || !configExists {
+		return http.StatusNotAcceptable, []byte(""), fmt.Errorf("You must pass a configType and config elements")
+	}
+
+	config := agent.ConfigUpdate{
+		ConfigType: configType[0],
+		Config:     []byte(configData[0]),
+	}
+
+	configJSON, err := json.Marshal(config)
+
+	if err != nil {
+		return http.StatusInternalServerError, []byte("TITS"), errors.Wrap(err, "Could not convert the config to JSON")
+	}
+
+	// Now, we take the delay, and the person's name, and make a WorkRequest out of them.
+	work := agent.Work{Name: "config", Data: configJSON}
+
+	h.Queue <- work
+
+	return http.StatusOK, []byte(""), nil
+}
+
+// KillAgent stops the current docker-compose project and then kills the worker
+func (h Handler) KillAgent(w http.ResponseWriter, r *http.Request) (status int, body []byte, err error) {
+
+	agent.KillAgent(h.Logger)
+
+	return http.StatusOK, []byte(""), nil
 }
 
 // GetHealth returns the overall state of the node, this comprises of the status of the containers running
